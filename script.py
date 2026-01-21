@@ -18,7 +18,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn_features.transformers import DataFrameSelector
+
+
+class DataFrameSelector:
+    """Simple DataFrame column selector compatible with scikit-learn pipelines."""
+    def __init__(self, attribute_names):
+        self.attribute_names = attribute_names
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        return X[self.attribute_names].values
 
 ## skelarn -- models
 # from sklearn.neighbors import KNeighborsClassifier
@@ -47,14 +58,14 @@ for col in ['Age', 'CreditScore', 'Balance', 'EstimatedSalary']:
 
 
 ## Drop first 3 features
-df.drop(columns=['RowNumber', 'CustomerId', 'Surname'], axis=1, inplace=True)
+df.drop(columns=['RowNumber', 'CustomerId', 'Surname'], inplace=True)
 
 ## Filtering using Age Feature using threshold
-df.drop(index=df[df['Age'] > 80].index.tolist(), axis=0, inplace=True)
+df.drop(index=df[df['Age'] > 80].index.tolist(), inplace=True)
 
 
 ## To features and target
-X = df.drop(columns=['Exited'], axis=1)
+X = df.drop(columns=['Exited'])
 y = df['Exited']
 
 ## Split to train and test
